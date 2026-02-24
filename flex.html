@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IP Logger</title>
+    <style>
+      body {
+        font-family: system-ui, Arial, sans-serif;
+        padding: 24px;
+      }
+      .box {
+        max-width: 640px;
+        padding: 16px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+      }
+      code {
+        background: #f6f6f6;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>IP logger</h1>
+      <p>
+        Open DevTools console. This page will fetch your public IP and log it.
+      </p>
+      <p>Status: <code id="status">idle</code></p>
+    </div>
+
+    <script>
+      async function logPublicIp() {
+        const statusEl = document.getElementById("status");
+        try {
+          statusEl.textContent = "fetching...";
+          // Public IP lookup service (no key). If it’s blocked, use your own backend instead.
+          const res = await fetch("https://api.ipify.org?format=json", {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          console.log("Public IP:", data.ip);
+          statusEl.textContent = `ok: ${data.ip}`;
+        } catch (err) {
+          console.error("Failed to get IP:", err);
+          statusEl.textContent = "failed (check console)";
+        }
+      }
+
+      logPublicIp();
+    </script>
+  </body>
+</html>
